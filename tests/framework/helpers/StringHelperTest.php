@@ -417,4 +417,11 @@ class StringHelperTest extends TestCase
     {
         $this->assertSame($expectedResult, StringHelper::mb_ucwords($string));
     }
+
+    public function testIsEmpty()
+    {
+        $this->assertFalse(StringHelper::isEmpty('0'));
+        $this->assertFalse(StringHelper::isEmpty('  ', false));
+        $this->assertTrue(StringHelper::isEmpty('  '));
+    }
 }

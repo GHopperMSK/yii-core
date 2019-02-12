@@ -447,4 +447,21 @@ class BaseStringHelper
             : \htmlspecialchars($string, $flags, $encoding ?: ini_get('default_charset'), $double_encode)
         ;
     }
+
+    /**
+     * Check if a string is empty, relying on its length. Solves unobvious behavior when `empty('0')` equal to TRUE.
+     *
+     * @param string $string
+     * @param bool $trim
+     * @return bool
+     * @see http://php.net/empty
+     */
+    public static function isEmpty(string $string, $trim = true)
+    {
+        $string = (string) $string;
+        if ($trim) {
+            $string = \trim($string);
+        }
+        return strlen($string) === 0;
+    }
 }
