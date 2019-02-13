@@ -146,14 +146,67 @@ class ArrayHelperTest extends TestCase
 
     public function testRemove()
     {
-        $array = ['name' => 'b', 'age' => 3];
-        $name = ArrayHelper::remove($array, 'name');
+        $array = [
+            'name' => 'b',
+            'age' => 3,
+            'sub' => [
+                'first' => [
+                    'a' => 'A',
+                    'b' => 'B',
+                ],
+                'second' => [
+                    'c' => 'C',
+                    'd' => 'D',
+                ],
+            ],
+        ];
+        $value = ArrayHelper::remove($array, 'name');
 
-        $this->assertEquals($name, 'b');
-        $this->assertEquals($array, ['age' => 3]);
+        $this->assertEquals($value, 'b');
+        $this->assertEquals($array, [
+            'age' => 3,
+            'sub' => [
+                'first' => [
+                    'a' => 'A',
+                    'b' => 'B',
+                ],
+                'second' => [
+                    'c' => 'C',
+                    'd' => 'D',
+                ],
+            ],
+        ]);
 
         $default = ArrayHelper::remove($array, 'nonExisting', 'defaultValue');
         $this->assertEquals('defaultValue', $default);
+
+        $value = ArrayHelper::remove($array, 'sub.first');
+        $this->assertEquals($value, [
+            'a' => 'A',
+            'b' => 'B',
+        ]);
+
+        $this->assertEquals($array, [
+            'age' => 3,
+            'sub' => [
+                'second' => [
+                    'c' => 'C',
+                    'd' => 'D',
+                ],
+            ],
+        ]);
+
+        $value = ArrayHelper::remove($array, ['sub', 'second', 'c']);
+        $this->assertEquals($value, 'C');
+
+        $this->assertEquals($array, [
+            'age' => 3,
+            'sub' => [
+                'second' => [
+                    'd' => 'D',
+                ],
+            ],
+        ]);
     }
 
     public function testRemoveValueMultiple()

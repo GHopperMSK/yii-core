@@ -290,8 +290,8 @@ class BaseArrayHelper
     }
 
     /**
-     * Removes an item from an array and returns the value. If the key does not exist in the array, the default value
-     * will be returned instead.
+     * Removes an item from an array and returns the value. If the key path does not exist
+     * in the array, the default value will be returned instead.
      *
      * Usage examples,
      *
@@ -304,20 +304,29 @@ class BaseArrayHelper
      * ```
      *
      * @param array $array the array to extract value from
-     * @param string $key key name of the array element
-     * @param mixed $default the default value to be returned if the specified key does not exist
+     * @param string|array $path the path of item to be removed
+     * @param mixed $default the default value to be returned if the specified path does not exist
      * @return mixed|null the value of the element if found, default value otherwise
      */
-    public static function remove(&$array, $key, $default = null)
+    public static function remove(&$array, $path, $default = null)
     {
-        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
-            $value = $array[$key];
-            unset($array[$key]);
-
-            return $value;
+        if (!is_array($path)) {
+            $path = explode('.', $path);
         }
 
-        return $default;
+        while (count($path) > 1) {
+            $key = array_shift($path);
+            if (!isset($array[$key]) || !is_array($array[$key])) {
+                return $default;
+            }
+            $array = &$array[$key];
+        }
+
+        $key = array_shift($path);
+        $ret = $array[$key] ?? $default;
+        unset($array[$key]);
+
+        return $ret;
     }
 
     /**
