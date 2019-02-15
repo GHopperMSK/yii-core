@@ -159,6 +159,7 @@ class ArrayHelperTest extends TestCase
                     'd' => 'D',
                 ],
             ],
+            'sub.first.a' => 'key_with_dots',
         ];
         $value = ArrayHelper::remove($array, 'name');
 
@@ -175,10 +176,26 @@ class ArrayHelperTest extends TestCase
                     'd' => 'D',
                 ],
             ],
+            'sub.first.a' => 'key_with_dots',
         ]);
-
         $default = ArrayHelper::remove($array, 'nonExisting', 'defaultValue');
         $this->assertEquals('defaultValue', $default);
+
+        $value = ArrayHelper::remove($array, 'sub.first.a');
+        $this->assertEquals($value, 'key_with_dots');
+        $this->assertEquals($array, [
+            'age' => 3,
+            'sub' => [
+                'first' => [
+                    'a' => 'A',
+                    'b' => 'B',
+                ],
+                'second' => [
+                    'c' => 'C',
+                    'd' => 'D',
+                ],
+            ],
+        ]);
 
         $value = ArrayHelper::remove($array, 'sub.first');
         $this->assertEquals($value, [
@@ -196,6 +213,9 @@ class ArrayHelperTest extends TestCase
             ],
         ]);
 
+        $value = ArrayHelper::remove($array, ['sub', 'nonExisting', 'd'], 'defaultValue');
+        $this->assertEquals($value, 'defaultValue');
+
         $value = ArrayHelper::remove($array, ['sub', 'second', 'c']);
         $this->assertEquals($value, 'C');
 
@@ -207,6 +227,8 @@ class ArrayHelperTest extends TestCase
                 ],
             ],
         ]);
+
+
     }
 
     public function testRemoveValueMultiple()

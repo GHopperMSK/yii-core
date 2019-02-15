@@ -303,6 +303,10 @@ class BaseArrayHelper
      * // $array = ['options' => [1, 2]];
      * ```
      *
+     * Note that if the array already has an element `x.y.z`, then its value will be deleted
+     * instead of going through the sub-arrays. So it is better to be done specifying an array of key names
+     * like `['x', 'y', 'z']`.
+     *
      * @param array $array the array to extract value from
      * @param string|array $path the path of item to be removed
      * @param mixed $default the default value to be returned if the specified path does not exist
@@ -311,7 +315,7 @@ class BaseArrayHelper
     public static function remove(&$array, $path, $default = null)
     {
         if (!is_array($path)) {
-            $path = explode('.', $path);
+            $path = isset($array[$path]) ? array($path) : explode('.', $path);
         }
 
         while (count($path) > 1) {
